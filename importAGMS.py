@@ -61,9 +61,9 @@ def extractAndSave(type, name, date, size) :
         else:
             data = np.append(data, buffer, axis=0)
         print("Complete")
-        if not os.path.exists(name) :
-            os.mkdir(name)
-        sio.savemat(name +  "/" + type + "Data_" + date + ".mat", {type : data})
+        if not os.path.exists("../" + name) :
+            os.mkdir("../" + name)
+        sio.savemat("../" + name +  "/" + type + "Data_" + date + ".mat", {type : data})
 
 directoryPath = "D:/Iron2/CPSLogger"
 
