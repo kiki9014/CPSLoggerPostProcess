@@ -41,10 +41,10 @@ def extractAndSave(type, name, variable = False, size = 0) :
 
         sio.savemat(type + "Data_" + name + ".mat", {"timeStamp_" + type + "_" + name : timeStamp, type + "_" + name : data})
 
-date = "2016_04_14"
-
-extractAndSave("Hist",date,False,5)
-extractAndSave("Clip",date,False,5)
-extractAndSave("Book",date,False,5)
-extractAndSave("Key",date,False,5)
-extractAndSave("Wifi",date,True)
+# date = "2016_04_14"
+#
+# extractAndSave("Hist",date,False,5)
+# extractAndSave("Clip",date,False,5)
+# extractAndSave("Book",date,False,5)
+# extractAndSave("Key",date,False,5)
+# extractAndSave("Wifi",date,True)
