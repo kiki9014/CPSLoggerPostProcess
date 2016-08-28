@@ -29,9 +29,10 @@ def decodeWnull(text) :
 def parsingContent(contentStr, time) :
     timeData = [float(timeChunk) for timeChunk in time]
     parsed = timeData
-    print(contentStr)
+    # print(contentStr)
     if len(contentStr) == 1 : return "null"
     elif len(contentStr) == 3 : #SMS, MMS
+        if (contentStr[0] != "SMS") & (contentStr[0] != "MMS") : return "error"
         sender = base64.b64decode(contentStr[1]).decode("UTF-8")
         contentLength = base64.b64decode(contentStr[2]).decode("UTF-8")
         if not contentLength.isnumeric() : contentLength = len(contentLength)
@@ -73,7 +74,7 @@ def extractAndSave(date, name) :
 
             parsed = parsingContent(dataF[3:],dataF[:3])
 
-            print(parsed)
+            # print(parsed)
 
             if parsed == "null" : continue
             if parsed == "error" : break
@@ -87,7 +88,7 @@ def extractAndSave(date, name) :
         if not os.path.exists("../" + name):
             os.mkdir("../" + name)
         if flag :
-            sio.savemat("../" + name + "/" + type + "Data_" + date + ".mat", {type: data})
+            sio.savemat("../" + name + "/" + type + "_" + date + ".mat", {type+"_"+date: data})
 
 
 # date = "2016_05_18"
@@ -103,3 +104,9 @@ extractAndSave("2016_05_26", name)
 extractAndSave("2016_05_27", name)
 extractAndSave("2016_05_31", name)
 extractAndSave("2016_06_01", name)
+extractAndSave("2016_06_02", name)
+extractAndSave("2016_06_03", name)
+extractAndSave("2016_06_04", name)
+extractAndSave("2016_06_06", name)
+extractAndSave("2016_06_07", name)
+extractAndSave("2016_06_08", name)
