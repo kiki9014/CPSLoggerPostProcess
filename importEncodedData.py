@@ -1,11 +1,24 @@
 import base64
 import numpy as np
+import numpy.matlib as npmlib
 import scipy.io as sio
+import os.path
 
-directoryPath = "D:/CPSLogger"
+directoryPath = "D:/SmartCampusData"
 
-def extractAndSave(type, name, variable = False, size = 0) :
-    with open(directoryPath+"/" + type + "/" + "CPSLogger_" + type + "_" + name + ".txt",'r') as f :
+def saveTomat(type,date,timeStamp, data, name) :
+    if not os.path.exists("../" + name) :
+        os.mkdir("../" + name)
+    sio.savemat("../" + name +  "/" + type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+
+def extractAndSave(name, type, date, variable = False, size = 0) :
+    timeStamp, data = extract(name, type, date, variable, size)
+    saveTomat(type, date, timeStamp, data, name)
+
+def extract(name, type, date, variable = False, size = 0) :
+    data = [];
+    with open(directoryPath+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         index = 0
 
         buffer = []
@@ -25,21 +38,29 @@ def extractAndSave(type, name, variable = False, size = 0) :
             if len(dataF) != chunkSize :
                 if type != "Wifi" :
                     continue
-
+            #
+            # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
+            # if
             time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
-            decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:]]
-            print(time)
-            print(decodeData)
+            decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
+            # print(time)
+            # print(decodeData)
 
             if not flag :
                 data = np.array(decodeData)
-                timeStamp = np.array(time)
+                # timeStamp = np.array(time)
+                timeStamp = npmlib.repmat(time,len(decodeData),1)
                 flag = True
             else :
                 data = np.append(data,decodeData,axis=0)
-                timeStamp = np.append(timeStamp, time,axis=0)
+                repTime = npmlib.repmat(time,len(decodeData),1)
+                # print(repTime)
+                timeStamp = np.append(timeStamp, repTime, axis=0)
 
-        sio.savemat(type + "Data_" + name + ".mat", {"timeStamp_" + type + "_" + name : timeStamp, type + "_" + name : data})
+        # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    if len(data) == 0 :
+        return "null", data
+    else : return timeStamp, data
 
 # date = "2016_04_14"
 #
