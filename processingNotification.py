@@ -11,11 +11,14 @@ status = {'posted' : 0, 'removed' : 1}
 # data structure
 # time, type(0-SNS, 1-Noti, 2-Message), sender(-1 if type is noti), content, post/remove(0/1)
 
-class unexpectedError(Exception) :
+
+class UnexpectedError (Exception) :
     def __init__(self,value) :
         self.value = value
+
     def __str__(self):
         return repr(self.value)
+
 
 def decodeWnull(text) :
     if text == "null" : return "null"
@@ -24,7 +27,7 @@ def decodeWnull(text) :
         try :
             return base64.b64decode(text).decode("UTF-8")
         except (UnicodeDecodeError) :
-            raise unexpectedError("decode Failed")
+            raise UnexpectedError("decode Failed")
 
 def parsingContent(contentStr, time) :
     timeData = [float(timeChunk) for timeChunk in time]
@@ -43,7 +46,7 @@ def parsingContent(contentStr, time) :
     else : #other notification
         try :
             content = [decodeWnull(contentChunk) for contentChunk in contentStr[:-2]]
-        except unexpectedError :
+        except UnexpectedError :
             return "error"
         if "error" in content :
             return "error"

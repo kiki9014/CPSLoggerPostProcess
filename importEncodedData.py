@@ -25,10 +25,11 @@ def extract(name, type, date, variable = False, size = 0) :
         flag = False
 
         while True :
-            line = f.readline()
+            line = f.readline().rstrip('\n')
             if not line : break
 
             dataF = line.split(",")
+            # print(dataF)
 
             if variable :
                 chunkSize = dataF[3]
@@ -42,12 +43,15 @@ def extract(name, type, date, variable = False, size = 0) :
             # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
             # if
             time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
-            decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
+            if type == "Wifi" :
+                decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
+            else :
+                decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
             # print(time)
-            print(decodeData)
+            # print(decodeData)
 
-            if len(decodeData) < 3 :
-                print(decodeData)
+            # if len(decodeData) < 3 :
+            #     print(decodeData)
 
             if not flag :
                 data = np.array(decodeData)
@@ -65,9 +69,9 @@ def extract(name, type, date, variable = False, size = 0) :
         return "null", data
     else : return timeStamp, data
 
-# date = "2016_04_14"
+# date = "2016_09_19"
+# #
 #
-
 # name = "Iron2"
 
 # extractAndSave("Hist",date,False,5)
