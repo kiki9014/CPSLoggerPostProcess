@@ -45,7 +45,9 @@ def extractAndSave(type, name, date, size) :
             return
         if not os.path.exists("../" + name) :
             os.mkdir("../" + name)
-        sio.savemat("../" + name +  "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+        if not os.path.exists("../" + name + "/" + type) :
+            os.mkdir("../" + name + "/" + type)
+        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
 
 dateFile = "2016_05_18"
 

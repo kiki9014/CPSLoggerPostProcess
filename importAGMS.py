@@ -27,7 +27,7 @@ def dataArrange(line) :
 #         np.append(chunk)
 
 def extractAndSave(type, name, date, size) :
-    with open(directoryPath+"/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+    with open(directoryPath + name + "/CPSLogger" + "/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         index = 0
 
         buffer = []
@@ -63,17 +63,26 @@ def extractAndSave(type, name, date, size) :
         print("Complete")
         if not os.path.exists("../" + name) :
             os.mkdir("../" + name)
-        sio.savemat("../" + name +  "/" + type + "Data_" + date + ".mat", {type : data})
+        if not os.path.exists("../" + name + "/" + type) :
+            os.mkdir("../" + name + "/" + type)
+        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type : data})
 
-directoryPath = "D:/Iron2/CPSLogger"
+directoryPath = "D:/SmartCampusData/"
 
-date = "2016_05_12"
-name = "Iron2"
+date = "2016_05_18"
+name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
-extractAndSave("Acc",name,date,7)
-extractAndSave("Gyro",name,date,7)
-extractAndSave("Mag",name,date,7)
-extractAndSave("Step",name,date,5)
+for phone in name :
+    path = directoryPath + phone + "/CPSLogger/Acc"
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList :
+        dateFile = f[-14:-4]
+        extractAndSave("Acc",phone,dateFile,7)
+        extractAndSave("Gyro",phone,dateFile,7)
+        extractAndSave("Mag",phone,dateFile,7)
+    # extractAndSave("Step",name,dateFile,5)
 
 #
 # with open(directoryPath+"/Acc/CPSLogger_Acc_2016_04_06.txt",'r') as f :

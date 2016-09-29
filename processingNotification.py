@@ -6,7 +6,7 @@ import os.path
 directoryPath = "D:/SmartCampusData"
 
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
-status = {'posted' : 0, 'removed' : 1}
+status = {'p' : 0, 'r' : 1}
 
 # data structure
 # time, type(0-SNS, 1-Noti, 2-Message), sender(-1 if type is noti), content, post/remove(0/1)
@@ -43,7 +43,7 @@ def parsingContent(contentStr, time) :
         parsed.append(int(sender))
         parsed.append(int(contentLength))
         parsed.append(0) # 0 means true(posted)
-    else : #other notification
+    elif len(contentStr) == 5 : #other notification
         try :
             content = [decodeWnull(contentChunk) for contentChunk in contentStr[:-2]]
         except UnexpectedError :
@@ -57,9 +57,13 @@ def parsingContent(contentStr, time) :
         else :
             parsed.append(1)
             parsed.append(-1)
-        stat = status[contentStr[-1][:-1]]
+        if contentStr[-1] == "" :
+            return "error"
+        stat = status[contentStr[-1][0]]
         parsed.append(conLen)
         parsed.append(stat)
+    else :
+        return "error"
     return np.array([parsed])
 
 def extractAndSave(date, name) :
@@ -90,26 +94,43 @@ def extractAndSave(date, name) :
 
         if not os.path.exists("../" + name):
             os.mkdir("../" + name)
+        if not os.path.exists("../" + name + "/" + type):
+            os.mkdir("../" + name + "/" + type)
         if flag :
-            sio.savemat("../" + name + "/" + type + "_" + date + ".mat", {type+"_"+date: data})
+            sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type: data})
 
 
 # date = "2016_05_18"
-name = "Iron2"
+# name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2"]
+# name = "Iron2"
 
-extractAndSave("2016_05_18", name)
-extractAndSave("2016_05_19", name)
-extractAndSave("2016_05_20", name)
-extractAndSave("2016_05_23", name)
-extractAndSave("2016_05_24", name)
-extractAndSave("2016_05_25", name)
-extractAndSave("2016_05_26", name)
-extractAndSave("2016_05_27", name)
-extractAndSave("2016_05_31", name)
-extractAndSave("2016_06_01", name)
-extractAndSave("2016_06_02", name)
-extractAndSave("2016_06_03", name)
-extractAndSave("2016_06_04", name)
-extractAndSave("2016_06_06", name)
-extractAndSave("2016_06_07", name)
-extractAndSave("2016_06_08", name)
+phoneList = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+
+for name in phoneList :
+    path = directoryPath + "/" + name + "/CPSLogger/Notification"
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList :
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5 :
+            continue
+        print(dateFile)
+        extractAndSave(dateFile, name)
+
+# extractAndSave("2016_05_18", name)
+# extractAndSave("2016_05_19", name)
+# extractAndSave("2016_05_20", name)
+# extractAndSave("2016_05_23", name)
+# extractAndSave("2016_05_24", name)
+# extractAndSave("2016_05_25", name)
+# extractAndSave("2016_05_26", name)
+# extractAndSave("2016_05_27", name)
+# extractAndSave("2016_05_31", name)
+# extractAndSave("2016_06_01", name)
+# extractAndSave("2016_06_02", name)
+# extractAndSave("2016_06_03", name)
+# extractAndSave("2016_06_04", name)
+# extractAndSave("2016_06_06", name)
+# extractAndSave("2016_06_07", name)
+# extractAndSave("2016_06_08", name)
