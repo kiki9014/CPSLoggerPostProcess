@@ -11,7 +11,6 @@ status = {'p' : 0, 'r' : 1}
 # data structure
 # time, type(0-SNS, 1-Noti, 2-Message), sender(-1 if type is noti), content, post/remove(0/1)
 
-
 class UnexpectedError (Exception) :
     def __init__(self,value) :
         self.value = value
