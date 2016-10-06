@@ -81,7 +81,7 @@ def extractAndSave (name, type, date):
 
 # name = "Iron2"
 
-phoneList = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
 type = "Data"
 

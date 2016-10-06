@@ -103,7 +103,7 @@ def extractAndSave(date, name) :
 # name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2"]
 # name = "Iron2"
 
-phoneList = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
 for name in phoneList :
     path = directoryPath + "/" + name + "/CPSLogger/Notification"

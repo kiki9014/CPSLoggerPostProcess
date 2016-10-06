@@ -82,20 +82,22 @@ def extractAndSave(name, type, date) :
 
     saveHashTable(table, "AppTable")
 
-phoneList = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-
+# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+#
 type = "App"
-for name in phoneList :
-    # name = "Iron2"
+# for name in phoneList :
+#     # name = "Iron2"
+#
+#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
+#
+#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+#     for f in fileList :
+#         dateFile = f[-14:-4]
+#         # print(dateFile[5:7])
+#         if int(dateFile[5:7]) < 5 :
+#             continue
+#         print(dateFile)
+#         extractAndSave(name, type, dateFile)
 
-    path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    for f in fileList :
-        dateFile = f[-14:-4]
-        # print(dateFile[5:7])
-        if int(dateFile[5:7]) < 5 :
-            continue
-        print(dateFile)
-        extractAndSave(name, type, dateFile)
+extractAndSave("GalaxyS6", type, "2016_09_22")

@@ -70,7 +70,7 @@ def extractAndSave(type, name, date, size) :
 directoryPath = "D:/SmartCampusData/"
 
 date = "2016_05_18"
-name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+name = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
 for phone in name :
     path = directoryPath + phone + "/CPSLogger/Acc"

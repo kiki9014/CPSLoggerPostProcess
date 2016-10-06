@@ -16,12 +16,15 @@ def processingItem(str) :
     itemStr = str.split(":")
     # print(itemStr[1])
 
-    return itemStr[1]
+    if itemStr[1].isnumeric() :
+        return itemStr[1]
+    else :
+        return 0
 
 def processingData(str) :
     chunk = str.split(",")
 
-    data = [int(processingItem(dataF)) for dataF in chunk[-4:]]
+    data = [int(processingItem(dataF)) for dataF in chunk[-6:]]
 
     return data
 
@@ -62,7 +65,8 @@ def extractAndSave(name, date) :
             os.mkdir("../" + name + "/" + date)
         if flag :
             sio.savemat("../" + name + "/Survey_" + date + ".mat", {"Survey": data})
-deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11"]
+
+deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
 for deviceID in deviceIDList :
     path = directoryPath + deviceID
     print(deviceID)

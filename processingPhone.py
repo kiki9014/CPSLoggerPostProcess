@@ -82,7 +82,7 @@ def extractAndSave(name, type, date) :
 
         saveHashTable(table, "PhoneNumber")
 
-phoneList = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
 type = "Phone"
 for name in phoneList :
