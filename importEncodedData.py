@@ -9,7 +9,9 @@ directoryPath = "D:/SmartCampusData"
 def saveTomat(type,date,timeStamp, data, name) :
     if not os.path.exists("../" + name) :
         os.mkdir("../" + name)
-    sio.savemat("../" + name +  "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    if not os.path.exists("../" + name + "/" + type) :
+        os.mkdir("../" + name + "/" + type)
+    sio.savemat("../" + name +  "/" +  type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
     # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
 
 def extractAndSave(name, type, date, variable = False, size = 0) :

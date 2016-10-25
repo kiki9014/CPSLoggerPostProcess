@@ -5,7 +5,7 @@ import scipy.io as sio
 
 dateFile = "2016_05_18"
 
-name = "Iron2"
+name = "GalaxyS7"
 
 type = "Wifi"
 

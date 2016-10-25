@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.io as sio
 import os.path
+import sys
 
 directoryPath = "D:/SmartCampusData/"
 
@@ -11,20 +12,31 @@ def processingTime (str) :
 
     return [float(dataF) for dataF in data[2:]]
 
-def processingItem(str) :
+def processingItem(str, data) :
     # print(str)
     itemStr = str.split(":")
     # print(itemStr[1])
 
-    if itemStr[1].isnumeric() :
-        return itemStr[1]
-    else :
-        return 0
+    # if itemStr[-1].isnumeric() :
+    #     content = int(itemStr[-1])
+    # else :
+    #     content = (itemStr[-1].replace(" ", "")).encode('UTF-8', 'ignore')
 
-def processingData(str) :
+    try :
+        content = int(itemStr[-1])
+    except ValueError :
+        content = (itemStr[-1].replace(" ", "")).encode('UTF-8', 'ignore')
+
+    data[itemStr[0]] = content
+
+    return data
+
+def processingData(str, data) :
     chunk = str.split(",")
 
-    data = [int(processingItem(dataF)) for dataF in chunk[-6:]]
+    # data = [int(processingItem(dataF)) for dataF in chunk[-7:]]
+    for dataF in chunk[-7:] :
+        data = processingItem(dataF, data)
 
     return data
 
@@ -33,6 +45,7 @@ def extractAndSave(name, date) :
         fileName = "Survey_John"
     else :
         fileName = "Survey_John.txt"
+
     with open(directoryPath + name + "/" + date + "/" + fileName,  "r", encoding="utf8") as f :
         flag  = False
         while True :
@@ -42,16 +55,23 @@ def extractAndSave(name, date) :
             if line[-1] == "," : line = line[:-1]
 
             fragment = line.split("\t")
-            if len(fragment) != 2 :
-                print("Somethins is wrong in " + name + " when" + date)
+            if len(fragment) < 2 :
+                print("Something is wrong in " + name + " when" + date)
                 break
+            survey = {}
 
             time = processingTime(fragment[0])
 
-            item = processingData(fragment[1])
+            survey = processingData(fragment[-1], survey)
 
-            survey = np.array(time)
-            survey = np.append(survey, item)
+            # survey = np.array(time)
+            # survey = np.append(survey, item)
+
+            dt = [("location", np.str_), ("awakeness", 'i8'), ("happiness", 'i8'), ("time", 'f8'), ("activity", np.str_), ("companion", 'i8'), ("heartRate", 'i8'), ("health", 'i8')]
+
+            survey["time"] = time
+
+            print(survey)
 
             if not flag :
                 data = np.array([survey])
@@ -65,6 +85,10 @@ def extractAndSave(name, date) :
             os.mkdir("../" + name + "/" + date)
         if flag :
             sio.savemat("../" + name + "/Survey_" + date + ".mat", {"Survey": data})
+            # sio.loadmat("../" + name + "/Survey_" + date + ".mat")
+
+
+# sys.setdefaultencoding()
 
 deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
 for deviceID in deviceIDList :
