@@ -26,8 +26,8 @@ def dataArrange(line) :
 #     for chunk in x:
 #         np.append(chunk)
 
-def extractAndSave(type, name, date, size) :
-    with open(directoryPath + name + "/CPSLogger" + "/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+def extractAndSave(path, type, name, date, size) :
+    with open(path + name + "/CPSLogger" + "/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         index = 0
 
         buffer = []
@@ -53,7 +53,7 @@ def extractAndSave(type, name, date, size) :
                     data = np.append(data, buffer, axis=0)
                 buffer = []
             index += 1
-            if index%10000 == 0 :
+            if index%100000 == 0 :
                 print(index)
 
         if not flag:
@@ -68,8 +68,8 @@ def extractAndSave(type, name, date, size) :
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type : data})
 
 directoryPath = "D:/SmartCampusData/"
-
-date = "2016_05_18"
+#
+# date = "2016_05_18"
 name = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 
 for phone in name :

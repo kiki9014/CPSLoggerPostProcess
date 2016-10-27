@@ -11,16 +11,16 @@ def saveTomat(type,date,timeStamp, data, name) :
         os.mkdir("../" + name)
     if not os.path.exists("../" + name + "/" + type) :
         os.mkdir("../" + name + "/" + type)
-    sio.savemat("../" + name +  "/" +  type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    sio.savemat("../" + name +  "/" +  type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type  : timeStamp, type : data})
     # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
 
 def extractAndSave(name, type, date, variable = False, size = 0) :
     timeStamp, data = extract(name, type, date, variable, size)
     saveTomat(type, date, timeStamp, data, name)
 
-def extract(name, type, date, variable = False, size = 0) :
+def extract(path, name, type, date, variable = False, size = 0) :
     data = [];
-    with open(directoryPath+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+    with open(path+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         index = 0
 
         buffer = []

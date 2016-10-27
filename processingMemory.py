@@ -9,8 +9,8 @@ def dataArrange(line) :
     dataF = [float(datum) for datum in data]
     return dataF
 
-def extractAndSave(type, name, date, size) :
-    with open(directoryPath + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+def extractAndSave(path, type, name, date, size) :
+    with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         flag = False
         while True :
             line = f.readline().rstrip("\n")

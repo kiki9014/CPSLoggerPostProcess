@@ -16,8 +16,8 @@ def processingCell(dataF):
         return "null"
 
 
-def extractAndSave (name, type, date):
-    with open(directoryPath + "/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", "r", encoding="utf8") as f :
+def extractAndSave (path, name, type, date):
+    with open(path + "/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", "r", encoding="utf8") as f :
         flag = False
 
         while True:

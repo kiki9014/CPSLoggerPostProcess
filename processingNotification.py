@@ -65,9 +65,9 @@ def parsingContent(contentStr, time) :
         return "error"
     return np.array([parsed])
 
-def extractAndSave(date, name) :
+def extractAndSave(path, date, name) :
     type = "Notification"
-    with open(directoryPath+"/"+name+"/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt",'r') as f :
+    with open(path+"/"+name+"/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt",'r') as f :
 
         flag = False
 

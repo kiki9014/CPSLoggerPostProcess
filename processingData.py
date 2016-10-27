@@ -4,8 +4,8 @@ import os.path
 
 directoryPath = "D:/SmartCampusData"
 
-def extractAndSave (name, type, date):
-    with open(directoryPath + "/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", "r") as f :
+def extractAndSave (path, name, type, date):
+    with open(path + "/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", "r") as f :
         index = 0
 
         buffer = []

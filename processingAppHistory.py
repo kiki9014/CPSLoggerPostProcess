@@ -33,14 +33,14 @@ def processingApp(data, table):
     else :
         return [hashing(data, table), 0]
 
-def extractAndSave(name, type, date) :
+def extractAndSave(path, name, type, date) :
     tableTemp = loadHashTable("AppTable")
     if tableTemp == "null" :
         table = dict()
     else :
         table = tableTemp
 
-    with open(directoryPath + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+    with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         flag = False
 
         while True :
@@ -100,4 +100,4 @@ for name in phoneList :
         print(dateFile)
         extractAndSave(name, type, dateFile)
 
-extractAndSave("GalaxyS6", type, "2016_09_22")
+# extractAndSave("GalaxyS6", type, "2016_09_22")

@@ -9,8 +9,8 @@ def dataArrange(line) :
     dataF = [float(datum) for datum in data]
     return dataF
 
-def extractAndSave(type, name, date, size) :
-    with open(directoryPath + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+def extractAndSave(path, type, name, date, size) :
+    with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         flag = False
         while True :
             line = f.readline()
@@ -22,12 +22,16 @@ def extractAndSave(type, name, date, size) :
             dataF = line.split(",")
             # print(dataF)
 
-            if len(dataF) < 4 : break
-            if dataF[3] == "SAT" : continue
-            parsed = [float(datum) for datum in dataF[4:]]
+            if len(dataF) < 5 : break
+            if dataF[3] == "SAT" :
+                # if dataF[4].rstrip("\n") == "" : dataF[4] = "0"
+                # if float(dataF[4]) == 0 :
+                parsed = [0, 0, 0]
+            else :
+                parsed = [float(datum) for datum in dataF[4:]]
             time = [[float(datum) for datum in dataF[0:3]]]
 
-            if len(parsed) != size:
+            if len(parsed) != size :
                 continue
 
 
@@ -40,14 +44,14 @@ def extractAndSave(type, name, date, size) :
                 timeStamp = np.append(timeStamp, time, axis=0)
 
         # print("Complete")
-        if not flag :
-            print("No location data")
-            return
-        if not os.path.exists("../" + name) :
-            os.mkdir("../" + name)
-        if not os.path.exists("../" + name + "/" + type) :
-            os.mkdir("../" + name + "/" + type)
-        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    if not flag :
+        print("No location data")
+        return
+    if not os.path.exists("../" + name) :
+        os.mkdir("../" + name)
+    if not os.path.exists("../" + name + "/" + type) :
+        os.mkdir("../" + name + "/" + type)
+    sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type : data})
 
 dateFile = "2016_05_18"
 
