@@ -3,12 +3,19 @@ import scipy.io as sio
 import os.path
 import pickle
 import numpy.matlib as npmlib
+import appCategory
 
 directoryPath = "D:/SmartCampusData"
 
-blackList = ["cpslab.inhwan.cpslogger_v02"]
+blackList = ["cpslab.inhwan.cpslogger_v02", "com.android.browser","com.android.dialer"]
 
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
+
+def initCount(nameList) :
+    count = {}
+    for name in nameList :
+        count[name] = {'app' : {}, 'category' : {}}
+    return count
 
 def loadHashTable(tableName) :
     if not os.path.isfile(tableName + ".pkl") :
@@ -27,11 +34,38 @@ def hashing(data, table) :
         table[data] = len(table)+1
         return table[data]
 
-def processingApp(data, table):
-    if data in messengerList :
-        return [hashing(data, table), 1]
+def countApp (name, app, category) :
+    if app in count[name]["app"] :
+        count[name]["app"][app] += 1
     else :
-        return [hashing(data, table), 0]
+        count[name]["app"][app] = 1
+
+    if category in count[name]["category"] :
+        count[name]["category"][category] += 1
+    else :
+        count[name]["category"][category] = 1
+
+def saveCount(nameList) :
+    appCnt = {}
+    catCnt = {}
+    for name in nameList :
+        appCnt[name] = list(count[name]["app"].items())
+        catCnt[name] = list(count[name]["category"].items())
+
+    sio.savemat("../common/appCount.mat", appCnt)
+    sio.savemat("../common/categoryCount.mat", catCnt)
+
+def processingApp(name, data, table):
+    category = appCategory.getCategory(data)
+
+    hashedApp = hashing(data, table)
+
+    countApp(name,hashedApp,category)
+
+    if data in messengerList :
+        return [hashedApp, 1, category]
+    else :
+        return [hashedApp, 0, category]
 
 def extractAndSave(path, name, type, date) :
     tableTemp = loadHashTable("AppTable")
@@ -55,7 +89,7 @@ def extractAndSave(path, name, type, date) :
 
             time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
 
-            parsed = [processingApp(dataChunk,table) for dataChunk in dataF[4:] if not dataChunk in blackList]
+            parsed = [processingApp(name, dataChunk,table) for dataChunk in dataF[4:] if not dataChunk in blackList]
             # print(parsed)
 
             if not flag:
@@ -81,23 +115,31 @@ def extractAndSave(path, name, type, date) :
             sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type: data})
 
     saveHashTable(table, "AppTable")
+    # print(table)
 
 phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+# #
+# type = "App"
 #
-type = "App"
-for name in phoneList :
-    # name = "Iron2"
+count = initCount(phoneList)
+#
+# for name in phoneList :
+#     # name = "Iron2"
+#
+#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
+#
+#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+#     for f in fileList :
+#         dateFile = f[-14:-4]
+#         # print(dateFile[5:7])
+#         if int(dateFile[5:7]) < 5 :
+#             continue
+#         print(dateFile)
+#         extractAndSave(directoryPath, name, type, dateFile)
 
-    path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    for f in fileList :
-        dateFile = f[-14:-4]
-        # print(dateFile[5:7])
-        if int(dateFile[5:7]) < 5 :
-            continue
-        print(dateFile)
-        extractAndSave(name, type, dateFile)
+# # print(table)
+# appCategory.saveTable()
+# saveCount(phoneList)
 
 # extractAndSave("GalaxyS6", type, "2016_09_22")

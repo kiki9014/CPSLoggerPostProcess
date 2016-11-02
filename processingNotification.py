@@ -8,8 +8,21 @@ directoryPath = "D:/SmartCampusData"
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
 status = {'p' : 0, 'r' : 1}
 
+notiType = ['Messenger', 'Notification', 'SMS']
+
+cntSender = {}
+
+cntSender["Messenger"] = {}
+cntSender["SMS"] = {}
+
 # data structure
 # time, type(0-SNS, 1-Noti, 2-Message), sender(-1 if type is noti), content, post/remove(0/1)
+
+def countSender (name, type, sender) :
+    if sender in cntSender[type][name] :
+        cntSender[type][name][sender] += 1
+    else :
+        cntSender[type][name][sender] = 1
 
 class UnexpectedError (Exception) :
     def __init__(self,value) :
@@ -63,7 +76,7 @@ def parsingContent(contentStr, time) :
         parsed.append(stat)
     else :
         return "error"
-    return np.array([parsed])
+    return np.array(parsed)
 
 def extractAndSave(path, date, name) :
     type = "Notification"
@@ -85,11 +98,16 @@ def extractAndSave(path, date, name) :
             if parsed == "null" : continue
             if parsed == "error" : break
 
+            if parsed  != "null" :
+                sender = parsed[4]
+                if parsed[3] != 1 :
+                    countSender(name, notiType[int(parsed[3])],sender)
+
             if not flag :
-                data = np.array(parsed)
+                data = np.array([parsed])
                 flag = True
             else :
-                data = np.append(data, parsed, axis=0)
+                data = np.append(data, [parsed], axis=0)
 
         if not os.path.exists("../" + name):
             os.mkdir("../" + name)
@@ -98,24 +116,59 @@ def extractAndSave(path, date, name) :
         if flag :
             sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type: data})
 
+def initCount(name) :
+    cntSender["Messenger"][name] = {}
+    cntSender["SMS"][name] = {}
+
+def saveCount(nameList) :
+    if not os.path.exists("../common") :
+        os.mkdir("../common")
+    MessengerList = {}
+    SMSList = {}
+    #
+    for name in nameList :
+        MessengerList[name + "_MessengerList"] = list(cntSender["Messenger"][name].items())
+        SMSList[name+ "_SMSList"] = list(cntSender["SMS"][name].items())
+
+    sio.savemat("../common/SNS.mat", MessengerList)#{ "GalaxyS7" : MessengerList["GalaxyS7"], "":""})
+    sio.savemat("../common/SMS.mat", SMSList)
 
 # date = "2016_05_18"
 # name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2"]
 # name = "Iron2"
 
-phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-
-for name in phoneList :
-    path = directoryPath + "/" + name + "/CPSLogger/Notification"
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    for f in fileList :
-        dateFile = f[-14:-4]
-        # print(dateFile[5:7])
-        if int(dateFile[5:7]) < 5 :
-            continue
-        print(dateFile)
-        extractAndSave(dateFile, name)
+# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+#
+#
+# for name in phoneList :
+#     initCount(name)
+#
+#     path = directoryPath + "/" + name + "/CPSLogger/Notification"
+#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+#     for f in fileList :
+#         dateFile = f[-14:-4]
+#         # print(dateFile[5:7])
+#         if int(dateFile[5:7]) < 5 :
+#             continue
+#         print(dateFile)
+#         extractAndSave(directoryPath, dateFile, name)
+# saveCount(phoneList)
+#
+#
+# # print(cntSender["Messenger"])
+# #
+# if not os.path.exists("../common") :
+#     os.mkdir("../common")
+# MessengerList = {}
+# SMSList = {}
+# #
+# for name in phoneList :
+#     MessengerList[name + "_MessengerList"] = list(cntSender["Messenger"][name].items())
+#     SMSList[name+ "_SMSList"] = list(cntSender["SMS"][name].items())
+#
+# sio.savemat("../common/SNS.mat", MessengerList)#{ "GalaxyS7" : MessengerList["GalaxyS7"], "":""})
+# sio.savemat("../common/SMS.mat", SMSList)
 
 # extractAndSave("2016_05_18", name)
 # extractAndSave("2016_05_19", name)

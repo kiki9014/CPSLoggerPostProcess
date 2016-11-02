@@ -6,9 +6,10 @@ import processingCellLoc
 import processingData
 import processingPhone
 import processingLocation
-import proessingWiFi
+import processingWiFi
 import os.path
 import importEncodedData as iED
+import appCategory
 import numpy as np
 import scipy.io as sio
 
@@ -17,15 +18,24 @@ directoryPath = "D:/ActionLocationDataset/"
 
 # date = "5_18"
 
-day = {"2016_10_24" : 0, "2016_10_25" : 1}
+day = {"2016_10_24" : 0, "2016_10_25" : 1, "2016_10_28" : 2}
 
 startTime = {"geonho" : [[[9,12,0,0,], [11,12,0,0], [11,58,0,0], [13,0,0,0], [15,40,0,0], [17,0,0,0],[19,30,0,0],[23,55,0,0]],[[1,25,0,0],[9,30,0,0,],[12,50,0,0],[13,7,0,0],[14,30,0,0],[16,30,0,0],[17,53,0,0]]],
-        "SG" : [[[11,13,0,0],[12,31,0,0,],[12,41,0,0],[13,49,0,0],[15,12,0,0],[15,31,0,0],[16,59,0,0],[17,5,0,0,],[18,13,0,0]], [[12,54,0,0],[14,14,0,0],[15,36,0,0]]],
-        "HJ" : [[[14,23,11,412],[14,57,11,637],[15,32,37,391],[16,7,42,545],[17,48,27,995],[18,36,58,881],[18,48,53,532],[20,49,15,618],[21,38,54,85]], [[14,41,23,782],[15,10,52,539],[16,0,37,870],[17,45,49,970],[18,28,40,366],[18,40,12,620],[19,28,12,187]]]}
-
+        "SG" : [[[11,13,0,0],[12,31,0,0,],[12,41,0,0],[13,49,0,0],[15,12,0,0],[15,31,0,0],[16,59,0,0],[17,5,0,0,],[18,13,0,0]], [[12,54,0,0],[14,14,0,0],[15,36,0,0]], [[10, 22, 0, 0], [10, 52, 0, 0, ], [11, 23, 0, 0], [11, 53, 0, 0], [12, 31, 0, 0], [13, 8, 0, 0]]],
+        "HJ" : [[[14,23,11,412],[14,57,11,637],[15,32,37,391],[16,7,42,545],[17,48,27,995],[18,36,58,881],[18,48,53,532],[20,49,15,618],[21,38,54,85]], [[14,41,23,782],[15,10,52,539],[16,0,37,870],[17,45,49,970],[18,28,40,366],[18,40,12,620],[19,28,12,187]], [[10, 33, 30, 328], [11, 3, 19, 158], [11, 53, 14, 518], [12, 33, 9, 558]]]}
+#
 endTime = {"geonho" : [[[10,30,0,0,], [11,42,0,0], [12,56,0,0], [14,0,0,0], [16,40,0,0], [17,25,0,0],[20,30,0,0],[24,35,0,0]],[[1,55,0,0],[10,50,0,0,],[13,7,0,0],[13,54,0,0],[15,0,0,0],[17,20,0,0],[18,10,0,0]]],
-        "SG" : [[[11,29,0,0],[12,37,0,0,],[13,35,0,0],[14,44,0,0],[15,24,0,0],[16,50,0,0],[17,4,0,0],[17,10,0,0,],[18,26,0,0]], [[13,5,0,0],[15,33,0,0],[17,47,0,0]]],
-        "HJ" : [[[14,57,11,637],[15,19,10,773],[16,7,42,545],[16,41,31,339],[17,57,45,482],[18,48,53,532],[19,13,51,185],[21,2,39,341],[23,12,20,438]], [[15,10,28,414],[16,0,37,870],[16,59,9,170],[18,16,6,91],[18,40,12,620],[19,11,44,282],[20,4,26,192]]]}
+        "SG" : [[[11,29,0,0],[12,37,0,0,],[13,35,0,0],[14,44,0,0],[15,24,0,0],[16,50,0,0],[17,4,0,0],[17,10,0,0,],[18,26,0,0]], [[13,5,0,0],[15,33,0,0],[17,47,0,0]], [[10,52,0,0],[11,23,0,0,],[11,42,0,0],[12,22,0,0],[12,55,0,0],[13,19,0,0]]],
+        "HJ" : [[[14,57,11,637],[15,19,10,773],[16,7,42,545],[16,41,31,339],[17,57,45,482],[18,48,53,532],[19,13,51,185],[21,2,39,341],[23,12,20,438]], [[15,10,28,414],[16,0,37,870],[16,59,9,170],[18,16,6,91],[18,40,12,620],[19,11,44,282],[20,4,26,192]], [[10,53,2,682],[11,33,48,131],[12,22,39,620],[13,2,51,272]]]}
+
+
+# startTime = {"SG": [[10, 22, 0, 0], [10, 52, 0, 0, ], [11, 23, 0, 0], [11, 53, 0, 0], [12, 31, 0, 0], [13, 8, 0, 0]],
+#          "HJ": [[10, 33, 30, 328], [11, 3, 19, 158], [11, 53, 14, 518], [12, 33, 9, 558]]}
+#
+# endTime = {
+#         "SG" : [[10,52,0,0],[11,23,0,0,],[11,42,0,0],[12,22,0,0],[12,55,0,0],[13,19,0,0]],
+#         "HJ" : [[10,53,2,682],[11,33,48,131],[12,22,39,620],[13,2,51,272]]}
+
 
 def change2Sec (time) :
     return time[0]*3600 + time[1]*60 + time[2]
@@ -45,8 +55,8 @@ def cropfile(name, type, date) :
 
     buffer = []
 
-    startList = start[name]
-    endList = end[name]
+    startList = startTime[name]
+    endList = endTime[name]
 
     iter = 0
 
@@ -94,16 +104,18 @@ def cropfile(name, type, date) :
                 flag = False
 
 
-nameList = ["geonho", "SG", "HJ"]
+nameList = ["geonho","SG", "HJ"]
 
-tableTemp = proessingWiFi.loadHashTable("BSSID")
+phoneList = ["Iron2","GalaxyS6", "GalaxyS7"]
+
+tableTemp = processingWiFi.loadHashTable("BSSID")
 if tableTemp == "null" :
     table = dict()
 else :
     table = tableTemp
 
 for name in nameList :
-    sio.savemat("../" + name + "/" + "timeTable.mat", {"startTime" : startTime[name], "endTime" : endTime[name]})
+    sio.savemat("../" + name + "/" + "timeTableAdd.mat", {"startTime" : startTime[name], "endTime" : endTime[name]})
 
 # dateList = ["2016_10_24", "2016_10_25"]
 #
@@ -111,7 +123,7 @@ for name in nameList :
 #     for date in dateList :
 #         cropfile(name, "Acc", date)
 
-for name in nameList :
+for name in phoneList :
     print("AGM")
 
     path = directoryPath + name + "/CPSLogger/Acc"
@@ -120,43 +132,45 @@ for name in nameList :
 
     for f in fileList :
         dateFile = f[-14:-4]
-    #     importAGMS.extractAndSave(directoryPath, "Acc",name,dateFile,7)
-    #     importAGMS.extractAndSave(directoryPath, "Gyro",name,dateFile,7)
-    #     importAGMS.extractAndSave(directoryPath, "Mag",name,dateFile,7)
-    #
-    # type = "App"
-    #
-    # print(type)
-    #
-    # path = directoryPath + name + "/CPSLogger/" + type
-    #
-    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    #
-    # for f in fileList:
-    #     dateFile = f[-14:-4]
-    #     # print(dateFile[5:7])
-    #     if int(dateFile[5:7]) < 5:
-    #         continue
-    #     print(dateFile)
-    #     processingAppHistory.extractAndSave(directoryPath, name, type, dateFile)
-    # path = directoryPath + "/" + name + "/CPSLogger/" + type
-    # print(name)
-    #
-    # type = "Mem"
-    #
-    # print(type)
-    #
-    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    #
-    # for f in fileList:
-    #     dateFile = f[-14:-4]
-    #     # print(dateFile[5:7])
-    #     if int(dateFile[5:7]) < 5:
-    #         continue
-    #     print(dateFile)
-    #     processingMemory.extractAndSave(directoryPath, type, name, dateFile, 1)
-    #
+        importAGMS.extractAndSave(directoryPath, "Acc",name,dateFile,7)
+        importAGMS.extractAndSave(directoryPath, "Gyro",name,dateFile,7)
+        importAGMS.extractAndSave(directoryPath, "Mag",name,dateFile,7)
+
+    type = "App"
+
+    print(type)
+
+    path = directoryPath + name + "/CPSLogger/" + type
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList:
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5:
+            continue
+        print(dateFile)
+        processingAppHistory.extractAndSave(directoryPath, name, type, dateFile)
+    path = directoryPath + "/" + name + "/CPSLogger/" + type
+    print(name)
+
+    type = "Mem"
+
+    print(type)
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList:
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5:
+            continue
+        print(dateFile)
+        processingMemory.extractAndSave(directoryPath, type, name, dateFile, 1)
+
     print("Noti")
+
+    processingNotification.initCount(name)
 
     path = directoryPath + "/" + name + "/CPSLogger/Notification"
     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
@@ -168,55 +182,55 @@ for name in nameList :
             continue
         print(dateFile)
         processingNotification.extractAndSave(directoryPath, dateFile, name)
-    #
-    # type = "Signal"
-    #
-    # print(type)
-    #
-    # path = directoryPath + name + "/CPSLogger/" + type
-    # print(name)
-    #
-    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    #
-    # for f in fileList :
-    #     dateFile = f[-14:-4]
-    #     # print(dateFile[5:7])
-    #     if int(dateFile[5:7]) < 5 :
-    #         continue
-    #     print(dateFile)
-    #     processingCellLoc.extractAndSave(directoryPath, name, type, dateFile)
-    #
-    # type = "Data"
-    #
-    # print(type)
-    #
-    # path = directoryPath + name + "/CPSLogger/" + type
-    # print(name)
-    #
-    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    #
-    # for f in fileList :
-    #     dateFile = f[-14:-4]
-    #     # print(dateFile[5:7])
-    #     if int(dateFile[5:7]) < 5 :
-    #         continue
-    #     print(dateFile)
-    #     processingData.extractAndSave(directoryPath, name, type, dateFile)
-    #
-    # type = "Phone"
-    # print(type)
-    #
-    # path = directoryPath + name + "/CPSLogger/" + type
-    #
-    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    #
-    # for f in fileList :
-    #     dateFile = f[-14:-4]
-    #     # print(dateFile[5:7])
-    #     if int(dateFile[5:7]) < 5 :
-    #         continue
-    #     print(dateFile)
-    #     processingPhone.extractAndSave(directoryPath, name, type, dateFile)
+
+    type = "Signal"
+
+    print(type)
+
+    path = directoryPath + name + "/CPSLogger/" + type
+    print(name)
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList :
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5 :
+            continue
+        print(dateFile)
+        processingCellLoc.extractAndSave(directoryPath, name, type, dateFile)
+
+    type = "Data"
+
+    print(type)
+
+    path = directoryPath + name + "/CPSLogger/" + type
+    print(name)
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList :
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5 :
+            continue
+        print(dateFile)
+        processingData.extractAndSave(directoryPath, name, type, dateFile)
+
+    type = "Phone"
+    print(type)
+
+    path = directoryPath + name + "/CPSLogger/" + type
+
+    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for f in fileList :
+        dateFile = f[-14:-4]
+        # print(dateFile[5:7])
+        if int(dateFile[5:7]) < 5 :
+            continue
+        print(dateFile)
+        processingPhone.extractAndSave(directoryPath, name, type, dateFile)
 
     type = "Location"
     print(type)
@@ -247,7 +261,10 @@ for name in nameList :
         timeStamp, data = iED.extract(directoryPath, name, type, dateFile, True)
         if len(data) == 0:
             continue
-        temp = [proessingWiFi.processingAP(dataF, table) for dataF in data]
+        temp = [processingWiFi.processingAP(dataF, table) for dataF in data]
         iED.saveTomat(type, dateFile, timeStamp, temp, name)
 
-proessingWiFi.saveHashTable(table, "BSSID")
+processingWiFi.saveHashTable(table, "BSSID")
+processingAppHistory.saveCount(processingAppHistory.phoneList)
+appCategory.saveTable()
+processingNotification.saveCount(phoneList)

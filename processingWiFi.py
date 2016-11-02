@@ -56,17 +56,17 @@ else :
 
 # iED.saveTomat("Wifi",date,timeStamp,data,name)
 
-fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-for f in fileList :
-    dateFile = f[-14:-4]
-    # print(dateFile[5:7])
-    if int(dateFile[5:7]) < 5 :
-        continue
-    print(dateFile)
-    timeStamp, data = iED.extract(name, type, dateFile, True)
-    if len(data) == 0:
-        continue
-    temp = [processingAP(dataF, table) for dataF in data]
-    iED.saveTomat(type, dateFile, timeStamp, temp, name)
-saveHashTable(table, "BSSID")
+# fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+# for f in fileList :
+#     dateFile = f[-14:-4]
+#     # print(dateFile[5:7])
+#     if int(dateFile[5:7]) < 5 :
+#         continue
+#     print(dateFile)
+#     timeStamp, data = iED.extract(name, type, dateFile, True)
+#     if len(data) == 0:
+#         continue
+#     temp = [processingAP(dataF, table) for dataF in data]
+#     iED.saveTomat(type, dateFile, timeStamp, temp, name)
+# saveHashTable(table, "BSSID")

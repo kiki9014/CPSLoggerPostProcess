@@ -50,20 +50,20 @@ def extractAndSave(path, type, name, date, size) :
             os.mkdir("../" + name + "/" + type)
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type : data})
 
-phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-
-type = "Mem"
-
-for name in phoneList:
-    path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-    print(name)
-
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    for f in fileList:
-        dateFile = f[-14:-4]
-        # print(dateFile[5:7])
-        if int(dateFile[5:7]) < 5:
-            continue
-        print(dateFile)
-        extractAndSave(type, name, dateFile, 1)
+# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+#
+# type = "Mem"
+#
+# for name in phoneList:
+#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
+#     print(name)
+#
+#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+#     for f in fileList:
+#         dateFile = f[-14:-4]
+#         # print(dateFile[5:7])
+#         if int(dateFile[5:7]) < 5:
+#             continue
+#         print(dateFile)
+#         extractAndSave(type, name, dateFile, 1)

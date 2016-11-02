@@ -70,18 +70,18 @@ def extractAndSave(path, type, name, date, size) :
 directoryPath = "D:/SmartCampusData/"
 #
 # date = "2016_05_18"
-name = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-
-for phone in name :
-    path = directoryPath + phone + "/CPSLogger/Acc"
-
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-
-    for f in fileList :
-        dateFile = f[-14:-4]
-        extractAndSave("Acc",phone,dateFile,7)
-        extractAndSave("Gyro",phone,dateFile,7)
-        extractAndSave("Mag",phone,dateFile,7)
+# name = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+#
+# for phone in name :
+#     path = directoryPath + phone + "/CPSLogger/Acc"
+#
+#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+#
+#     for f in fileList :
+#         dateFile = f[-14:-4]
+#         extractAndSave("Acc",phone,dateFile,7)
+#         extractAndSave("Gyro",phone,dateFile,7)
+#         extractAndSave("Mag",phone,dateFile,7)
     # extractAndSave("Step",name,dateFile,5)
 
 #
