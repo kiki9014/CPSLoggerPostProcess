@@ -7,7 +7,7 @@ import appCategory
 
 directoryPath = "D:/SmartCampusData"
 
-blackList = ["cpslab.inhwan.cpslogger_v02", "com.android.browser","com.android.dialer"]
+blackList = ["cpslab.inhwan.cpslogger_v02", "com.android.browser","com.android.dialer", "com.bnl.GanadaIMEBeta", "com.buzzpia.aqua.launcher", "kvp.jjy.MispAndroid320", "com.google.android.wearable.app"]
 
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
 
@@ -122,6 +122,8 @@ phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 # type = "App"
 #
 count = initCount(phoneList)
+tableTemp = loadHashTable("AppTable")
+print(tableTemp)
 #
 # for name in phoneList :
 #     # name = "Iron2"

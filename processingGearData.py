@@ -12,6 +12,19 @@ directoryPath = "D:/SmartCampusData/"
 dataTypes = ["None", "gearAcc", "gearGyro", "gearMag", "gearUV", "gearLight", "gearPress", "gearHR", "gearBattery", "gearMemory"]
 lenData = [0, 8, 8, 8, 6, 6, 6, 6, 6, 6]
 
+season3Date = "10_11"
+
+def checkSeason(dateStr, seasonStr) :
+    date = [int(dateChunk) for dateChunk in dateStr.split("_")]
+    season = [int(seasonChunk) for seasonChunk in seasonStr.split("_")]
+
+    if date[0] < season[0] :
+        return False
+    elif date[1] < season[1] :
+        return False
+    else :
+        return True
+
 def transGearToMat(path, name, date) :
     pathDir = path + "/" + name + "/" + date
 
@@ -44,9 +57,6 @@ def transGearToMat(path, name, date) :
                 if len(dataF) < lenData[int(dataF[4])] : break
 
                 time = [float(timeChunk) for timeChunk in dataF[0:4]]
-
-                if index == 2603 :
-                    print('Time')
 
                 time[2] = time[2] + time[3]/1000
 
@@ -93,12 +103,14 @@ def transGearToMat(path, name, date) :
         os.mkdir("../" + name + "/" + date)
     sio.savemat("../" + name + "/" + date + "/" + "gearSensing_" + date + ".mat", data)
 
-# deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
-# for deviceID in deviceIDList :
-#     path = directoryPath + deviceID
-#     print(deviceID)
-#     dirList = [d for d in os.listdir(path) if not os.path.isfile(os.path.join(path, d))]
-#     for dir in dirList :
-#         date = dir
-#         print(date)
-#         transGearToMat(directoryPath, deviceID, date)
+deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
+for deviceID in deviceIDList :
+    path = directoryPath + deviceID
+    print(deviceID)
+    dirList = [d for d in os.listdir(path) if not os.path.isfile(os.path.join(path, d))]
+    for dir in dirList :
+        date = dir
+        if checkSeason(date, season3Date) == False :
+            continue
+        print(date)
+        transGearToMat(directoryPath, deviceID, date)

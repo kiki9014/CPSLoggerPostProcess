@@ -78,7 +78,7 @@ def saveTable () :
 # # print(cat2)
 # # print(cat3)
 # #
-print(categoryList)
+# print(categoryList)
 # print(appTable)
 #
 # saveTable()

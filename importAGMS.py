@@ -4,7 +4,11 @@ import os.path
 
 def dataArrange(line) :
     data = line.split(",")
-    dataF = [float(datum) for datum in data]
+    try :
+        dataF = [float(datum) for datum in data]
+    except ValueError :
+        # print("Wrong input : %s" , data)
+        dataF = []
     return dataF
 
 ## TODO : Implement This for simple code

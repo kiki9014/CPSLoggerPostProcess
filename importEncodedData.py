@@ -45,10 +45,15 @@ def extract(path, name, type, date, variable = False, size = 0) :
             # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
             # if
             time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
-            if type == "Wifi" :
-                decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
-            else :
-                decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
+            try :
+                if type == "Wifi" :
+                    decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
+                else :
+                    decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
+            except UnicodeDecodeError :
+                print("unicodeError occurred")
+                continue
+
             # print(time)
             # print(decodeData)
 

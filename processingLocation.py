@@ -13,22 +13,22 @@ def extractAndSave(path, type, name, date, size) :
     with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
         flag = False
         while True :
-            line = f.readline()
+            line = f.readline().rstrip("\n")
             if not line : break
-            if line[len(line)-1] == ',' : break
             if line[len(line)-1] == '-' : break
             if line[len(line)-1] == '.' : break
 
             dataF = line.split(",")
             # print(dataF)
 
-            if len(dataF) < 5 : break
-            if dataF[3] == "SAT" :
+            if len(dataF) < 4 : break
+            if "SAT" in dataF :
                 # if dataF[4].rstrip("\n") == "" : dataF[4] = "0"
                 # if float(dataF[4]) == 0 :
                 parsed = [0, 0, 0]
             else :
                 parsed = [float(datum) for datum in dataF[4:]]
+                if line[len(line)-1] == ',' : break
             time = [[float(datum) for datum in dataF[0:3]]]
 
             if len(parsed) != size :
@@ -53,17 +53,18 @@ def extractAndSave(path, type, name, date, size) :
         os.mkdir("../" + name + "/" + type)
     sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type : data})
 
-# dateFile = "2016_05_18"
-#
+# dateFile = "2016_11_02"
+# #
 # name = "Iron2"
 #
 # type = "Location"
-#
+# #
 # path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-#
-# fileLIst = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-# for file in fileLIst :
-#     dateFile = file[-14:-4]
-#     print(dateFile)
-#     extractAndSave(type, name, dateFile, 3)
+# #
+# # fileLIst = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+# #
+# # for file in fileLIst :
+# #     dateFile = file[-14:-4]
+# #     print(dateFile)
+# #     extractAndSave(type, name, dateFile, 3)
+# extractAndSave(directoryPath, type, name, dateFile, 3)
