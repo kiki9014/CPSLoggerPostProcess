@@ -117,8 +117,9 @@ def extractAndSave(path, name, type, date) :
     saveHashTable(table, "AppTable")
     # print(table)
 
-phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
+# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 # #
+phoneList = ["P1", "P2", "P3", "P4"]
 # type = "App"
 #
 count = initCount(phoneList)

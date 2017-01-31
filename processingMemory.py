@@ -23,7 +23,7 @@ def extractAndSave(path, type, name, date, size) :
             dataF = line.split(",")
             # print(dataF)
 
-            if len(dataF) < 4 : break
+            if len(dataF) < 5 : break
             # print(dataF[4])
             parsed = float(dataF[4])
             time = [[float(datum) for datum in dataF[0:3]]]

@@ -2,7 +2,7 @@ import numpy as np
 import scipy.io as sio
 import os.path
 
-directoryPath = "D:/SmartCampusData/"
+directoryPath = "D:/TempData/"
 
 # directoryPath = "D:/ActionLocationDataset/"
 # deviceID = "DDEE"
@@ -104,6 +104,7 @@ def transGearToMat(path, name, date) :
     sio.savemat("../" + name + "/" + date + "/" + "gearSensing_" + date + ".mat", data)
 
 deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
+deviceIDList = ["C6EC"]
 for deviceID in deviceIDList :
     path = directoryPath + deviceID
     print(deviceID)
