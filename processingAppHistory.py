@@ -4,12 +4,15 @@ import os.path
 import pickle
 import numpy.matlib as npmlib
 import appCategory
+import sys
 
 directoryPath = "D:/SmartCampusData"
 
 blackList = ["cpslab.inhwan.cpslogger_v02", "com.android.browser","com.android.dialer", "com.bnl.GanadaIMEBeta", "com.buzzpia.aqua.launcher", "kvp.jjy.MispAndroid320", "com.google.android.wearable.app"]
 
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
+
+count = {}
 
 def initCount(nameList) :
     count = {}
@@ -67,64 +70,71 @@ def processingApp(name, data, table):
     else :
         return [hashedApp, 0, category]
 
+def initAppProcessing(list):
+    return initCount(list)
+
 def extractAndSave(path, name, type, date) :
     tableTemp = loadHashTable("AppTable")
     if tableTemp == "null" :
         table = dict()
     else :
         table = tableTemp
+    flag = False
 
-    with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
-        flag = False
+    try :
+        with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
 
-        while True :
-            line = f.readline().rstrip('\n')
+            while True :
+                line = f.readline().rstrip('\n')
 
-            if not line: break
-            if line[len(line) - 1] == ',': break
-            if line[len(line) - 1] == '-': break
-            if line[len(line) - 1] == '.': break
+                if not line: break
+                if line[len(line) - 1] == ',': break
+                if line[len(line) - 1] == '-': break
+                if line[len(line) - 1] == '.': break
 
-            dataF = line.split(",")
+                dataF = line.split(",")
 
-            time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
+                time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
 
-            parsed = [processingApp(name, dataChunk,table) for dataChunk in dataF[4:] if not dataChunk in blackList]
-            # print(parsed)
+                parsed = [processingApp(name, dataChunk,table) for dataChunk in dataF[4:] if not dataChunk in blackList]
+                # print(parsed)
 
-            if not flag:
-                data = np.array([parsed])
-                # timeStamp = np.array(time)
-                timeStamp = npmlib.repmat(time, len(parsed), 1)
-                flag = True
-            else:
-                data = np.append(data, [parsed])
-                repTime = npmlib.repmat(time, len(parsed), 1)
-                # print(repTime)
-                timeStamp = np.append(timeStamp, repTime, axis=0)
-
-        if not os.path.exists("../" + name):
-            os.mkdir("../" + name)
-        if not os.path.exists("../" + name + "/" + type):
-            os.mkdir("../" + name + "/" + type)
-        if not flag :
-            flag = True
-            timeStamp = np.array([])
-            data = np.array([])
-        if flag:
-            sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type: data})
+                if not flag:
+                    data = np.array([parsed])
+                    # timeStamp = np.array(time)
+                    timeStamp = npmlib.repmat(time, len(parsed), 1)
+                    flag = True
+                else:
+                    data = np.append(data, [parsed])
+                    repTime = npmlib.repmat(time, len(parsed), 1)
+                    # print(repTime)
+                    timeStamp = np.append(timeStamp, repTime, axis=0)
+    except IOError as error :
+        print("Error occurred when processing App History : {0}".format(error))
+    except :
+        print("Unexpected error occurred : " + sys.exc_info()[0])
+    if not os.path.exists("../" + name):
+        os.mkdir("../" + name)
+    if not os.path.exists("../" + name + "/" + type):
+        os.mkdir("../" + name + "/" + type)
+    if not flag :
+        flag = True
+        timeStamp = np.array([])
+        data = np.array([])
+    if flag :
+        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type: data})
 
     saveHashTable(table, "AppTable")
     # print(table)
 
 # phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 # #
-phoneList = ["P1", "P2", "P3", "P4"]
-# type = "App"
-#
-count = initCount(phoneList)
-tableTemp = loadHashTable("AppTable")
-print(tableTemp)
+# phoneList = ["P1", "P2", "P3", "P4"]
+# # type = "App"
+# #
+# count = initCount(phoneList)
+# tableTemp = loadHashTable("AppTable")
+# print(tableTemp)
 #
 # for name in phoneList :
 #     # name = "Iron2"

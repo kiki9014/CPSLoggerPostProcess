@@ -1,8 +1,9 @@
 import numpy as np
 import scipy.io as sio
 import os.path
+import sys
 
-directoryPath = "D:/TempData/"
+directoryPath = "D:/Data"
 
 # directoryPath = "D:/ActionLocationDataset/"
 # deviceID = "DDEE"
@@ -12,7 +13,7 @@ directoryPath = "D:/TempData/"
 dataTypes = ["None", "gearAcc", "gearGyro", "gearMag", "gearUV", "gearLight", "gearPress", "gearHR", "gearBattery", "gearMemory"]
 lenData = [0, 8, 8, 8, 6, 6, 6, 6, 6, 6]
 
-season3Date = "10_11"
+season3Date = "1_1"
 
 def checkSeason(dateStr, seasonStr) :
     date = [int(dateChunk) for dateChunk in dateStr.split("_")]
@@ -26,7 +27,7 @@ def checkSeason(dateStr, seasonStr) :
         return True
 
 def transGearToMat(path, name, date) :
-    pathDir = path + "/" + name + "/" + date
+    pathDir = path + "/" + date
 
     fileDir = [f for f in os.listdir(pathDir) if os.path.isfile(os.path.join(pathDir, f)) and f[0:9] == "HWsensing"]
 
@@ -39,56 +40,60 @@ def transGearToMat(path, name, date) :
 
     flags = [False for type in dataTypes]
 
-    for file in fileDir :
-        with open(directoryPath + "/" + name + "/" + date + "/" + file) as f:
-            index = 0
-            while True:
-                line = f.readline()
+    try :
+        for file in fileDir :
+            with open(pathDir + "/" + file) as f:
+                index = 0
+                while True:
+                    line = f.readline()
 
-                if not line : break
-                if line[len(line)-1] == "-" : break
-                if line[len(line)-1] == ',' : break
-                if line[len(line)-1] == '.' : break
+                    if not line : break
+                    if line[len(line)-1] == "-" : break
+                    if line[len(line)-1] == ',' : break
+                    if line[len(line)-1] == '.' : break
 
-                dataF = line.split(",")
+                    dataF = line.split(",")
 
-                if len(dataF) < 5 : break
+                    if len(dataF) < 5 : break
 
-                if len(dataF) < lenData[int(dataF[4])] : break
+                    if len(dataF) < lenData[int(dataF[4])] : break
 
-                time = [float(timeChunk) for timeChunk in dataF[0:4]]
+                    time = [float(timeChunk) for timeChunk in dataF[0:4]]
 
-                time[2] = time[2] + time[3]/1000
+                    time[2] = time[2] + time[3]/1000
 
-                del time[3]
+                    del time[3]
 
-                dataTypeNum = int(dataF[4])
+                    dataTypeNum = int(dataF[4])
 
-                dataFragments = [float(dataFrag) for dataFrag in dataF[5:]]
+                    dataFragments = [float(dataFrag) for dataFrag in dataF[5:]]
 
-                time.extend(dataFragments)
+                    time.extend(dataFragments)
 
-                dataChunk = time
+                    dataChunk = time
 
-                dataType = dataTypes[dataTypeNum]
+                    dataType = dataTypes[dataTypeNum]
 
-                buffer[dataType].append(dataChunk)
+                    buffer[dataType].append(dataChunk)
 
-                flag = flags[dataTypeNum]
+                    flag = flags[dataTypeNum]
 
-                if len(buffer[dataType]) == 100000 :
-                    # print(dataType)
-                    if not flag :
-                        data[dataType] = np.array(buffer[dataType])
-                        flags[dataTypeNum] = True
-                    else :
-                        data[dataType] = np.append(data[dataType], buffer[dataType], axis=0)
-                    buffer[dataType] = []
+                    if len(buffer[dataType]) == 100000 :
+                        # print(dataType)
+                        if not flag :
+                            data[dataType] = np.array(buffer[dataType])
+                            flags[dataTypeNum] = True
+                        else :
+                            data[dataType] = np.append(data[dataType], buffer[dataType], axis=0)
+                        buffer[dataType] = []
 
-                index += 1
-                if index%100000 == 0:
-                    print(index)
-
+                    index += 1
+                    if index%100000 == 0:
+                        print(index)
+    except IOError as error :
+        print("Error occurred when processing Gear data : {0}".format(error))
+    except :
+        print("Unexpected error occurred : " + sys.exc_info()[0])
     for dataType in dataTypes :
         if not flags[dataTypes.index(dataType)]:
             data[dataType] = np.array(buffer[dataType])
@@ -104,9 +109,9 @@ def transGearToMat(path, name, date) :
     sio.savemat("../" + name + "/" + date + "/" + "gearSensing_" + date + ".mat", data)
 
 deviceIDList = ["DDEE", "6DEB", "6D57", "C6EC", "6E11","6E23"]
-deviceIDList = ["C6EC"]
+deviceIDList = ["P1", "P2", "P3", "P4", "P5"]
 for deviceID in deviceIDList :
-    path = directoryPath + deviceID
+    path = directoryPath + "/" + deviceID + "/Gear"
     print(deviceID)
     dirList = [d for d in os.listdir(path) if not os.path.isfile(os.path.join(path, d))]
     for dir in dirList :
@@ -114,4 +119,4 @@ for deviceID in deviceIDList :
         if checkSeason(date, season3Date) == False :
             continue
         print(date)
-        transGearToMat(directoryPath, deviceID, date)
+        transGearToMat(path, deviceID, date)

@@ -2,6 +2,7 @@ import base64
 import numpy as np
 import scipy.io as sio
 import os.path
+import sys
 
 directoryPath = "D:/SmartCampusData"
 
@@ -30,7 +31,6 @@ class UnexpectedError (Exception) :
 
     def __str__(self):
         return repr(self.value)
-
 
 def decodeWnull(text) :
     if text == "null" : return "null"
@@ -80,41 +80,48 @@ def parsingContent(contentStr, time) :
 
 def extractAndSave(path, date, name) :
     type = "Notification"
-    with open(path+"/"+name+"/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt",'r') as f :
+    flag = False
 
-        flag = False
+    try :
+        with open(path+"/"+name+"/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt",'r') as f :
 
-        while True :
-            line = f.readline()
+            while True :
+                line = f.readline()
 
-            if not line : break
+                if not line : break
 
-            dataF = line.split(",")
+                dataF = line.split(",")
 
-            parsed = parsingContent(dataF[3:],dataF[:3])
+                parsed = parsingContent(dataF[3:],dataF[:3])
 
-            # print(parsed)
+                # print(parsed)
 
-            if parsed == "null" : continue
-            if parsed == "error" : break
+                if parsed == "null" : continue
+                if parsed == "error" : break
 
-            if parsed  != "null" :
-                sender = parsed[4]
-                if parsed[3] != 1 :
-                    countSender(name, notiType[int(parsed[3])],sender)
+                if parsed  != "null" :
+                    sender = parsed[4]
+                    if parsed[3] != 1 :
+                        countSender(name, notiType[int(parsed[3])],sender)
 
-            if not flag :
-                data = np.array([parsed])
-                flag = True
-            else :
-                data = np.append(data, [parsed], axis=0)
+                if not flag :
+                    data = np.array([parsed])
+                    flag = True
+                else :
+                    data = np.append(data, [parsed], axis=0)
 
-        if not os.path.exists("../" + name):
-            os.mkdir("../" + name)
-        if not os.path.exists("../" + name + "/" + type):
-            os.mkdir("../" + name + "/" + type)
-        if flag :
-            sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type: data})
+    except IOError as error :
+        print("Error occurred when processing notification : {0}".format(error))
+    except :
+        print("Unexpected error occurred : " + sys.exc_info()[0])
+    if not flag :
+        data = np.array([])
+    if not os.path.exists("../" + name):
+        os.mkdir("../" + name)
+    if not os.path.exists("../" + name + "/" + type):
+        os.mkdir("../" + name + "/" + type)
+    if flag :
+        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type: data})
 
 def initCount(name) :
     cntSender["Messenger"][name] = {}

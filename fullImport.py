@@ -26,7 +26,7 @@ import appCategory
 directoryPath = "D:/Data/"
 
 # phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-phoneList = ["P3", "P4"]
+phoneList = ["P1","P2","P3","P4","P5"]
 
 completeList = ["Iron2"]
 
@@ -42,7 +42,7 @@ else :
 #     for date in dateList :
 #         cropfile(name, "Acc", date)
 
-season3Date = "2016_11_01"
+season3Date = "2017_01_01"
 
 def checkSeason(dateStr, seasonStr) :
     date = [int(dateChunk) for dateChunk in dateStr.split("_")]
@@ -59,18 +59,34 @@ def checkSeason(dateStr, seasonStr) :
     else :
         return True
 
+def getDateList(path, name) :
+    list = []
+    with open(path + "/" + name + "/" + "dateList_" + name + ".txt", 'r') as f :
+        while True :
+            line = f.readline().rstrip("\n")
+
+            if not line : break
+
+            list.append(line)
+
+    return list
+
+processingAppHistory.count = processingAppHistory.initAppProcessing(phoneList)
+
 for name in phoneList :
     # if name in completeList :
     #     continue
     print("Current User : " + name)
     print("AGM")
 
-    path = directoryPath + name + "/CPSLogger/Acc"
+    # path = directoryPath + name + "/CPSLogger/Acc"
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    dateList = getDateList(directoryPath, name)
 
-    for f in fileList :
-        dateFile = f[-14:-4]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         if checkSeason(dateFile, season3Date) == False :
             continue
         print(dateFile)
@@ -82,12 +98,11 @@ for name in phoneList :
 
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList:
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
         # print(dateFile[5:7])
         # if int(dateFile[5:7]) < 5:
         #     continue
@@ -95,16 +110,16 @@ for name in phoneList :
             continue
         print(dateFile)
         processingAppHistory.extractAndSave(directoryPath, name, type, dateFile)
-    path = directoryPath + "/" + name + "/CPSLogger/" + type
+    # path = directoryPath + "/" + name + "/CPSLogger/" + type
 
     type = "Mem"
 
     print(type)
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList:
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -115,11 +130,11 @@ for name in phoneList :
 
     processingNotification.initCount(name)
 
-    path = directoryPath + "/" + name + "/CPSLogger/Notification"
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # path = directoryPath + "/" + name + "/CPSLogger/Notification"
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList:
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -130,13 +145,13 @@ for name in phoneList :
 
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
     print(name)
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList :
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -147,13 +162,13 @@ for name in phoneList :
 
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
     print(name)
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList :
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -163,12 +178,12 @@ for name in phoneList :
     type = "Phone"
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList :
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -178,27 +193,27 @@ for name in phoneList :
     type = "Location"
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
 
-    fileLIst = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileLIst = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for file in fileLIst :
-        dateFile = file[-14:-4]
-        if checkSeason(dateFile,season3Date) == False :
-            continue
-        print(dateFile)
-        processingLocation.extractAndSave(directoryPath, type, name, dateFile, 3)
+    # for dateFile in dateList :
+    #     # dateFile = file[-14:-4]
+    #     if checkSeason(dateFile,season3Date) == False :
+    #         continue
+    #     print(dateFile)
+    #     processingLocation.extractAndSave(directoryPath, type, name, dateFile, 3)
 
     type = "Wifi"
 
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList:
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
         # print(dateFile[5:7])
         if checkSeason(dateFile,season3Date) == False :
             continue
@@ -213,12 +228,12 @@ for name in phoneList :
 
     print(type)
 
-    path = directoryPath + name + "/CPSLogger/" + type
+    # path = directoryPath + name + "/CPSLogger/" + type
 
-    fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    # fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
-    for f in fileList:
-        dateFile = f[-14:-4]
+    for dateFile in dateList :
+        # dateFile = f[-14:-4]
 
         if checkSeason(dateFile, season3Date) == False :
             continue
@@ -226,6 +241,6 @@ for name in phoneList :
         processingPower.extractAndSave(directoryPath, type, name, dateFile)
 
 processingWiFi.saveHashTable(table, "BSSID")
-processingAppHistory.saveCount(processingAppHistory.phoneList)
+processingAppHistory.saveCount(phoneList)
 appCategory.saveTable()
 processingNotification.saveCount(phoneList)

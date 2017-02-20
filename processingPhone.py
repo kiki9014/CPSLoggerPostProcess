@@ -2,6 +2,7 @@ import numpy as np
 import scipy.io as sio
 import os.path
 import pickle
+import sys
 
 directoryPath = "D:/SmartCampusData"
 
@@ -38,49 +39,53 @@ def extractAndSave(path, name, type, date) :
         table = dict()
     else :
         table = tableTemp
+    flag = False
 
-    with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f:
-        flag = False;
+    try :
+        with open(path + "/" + name + "/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt", 'r') as f:
 
-        while True :
-            line = f.readline().rstrip('\n')
+            while True :
+                line = f.readline().rstrip('\n')
 
-            if not line: break
-            if line[len(line) - 1] == ',': break
-            if line[len(line) - 1] == '-': break
-            if line[len(line) - 1] == '.': break
+                if not line: break
+                if line[len(line) - 1] == ',': break
+                if line[len(line) - 1] == '-': break
+                if line[len(line) - 1] == '.': break
 
-            dataF = line.split(",")
+                dataF = line.split(",")
 
-            time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
+                time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
 
-            parsed = processingPhoneNumber(dataF[-1], table)
-            if parsed == "null" :
-                continue
+                parsed = processingPhoneNumber(dataF[-1], table)
+                if parsed == "null" :
+                    continue
 
-            if not flag :
-                data = np.array(parsed)
-                # timeStamp = np.array(time)
-                timeStamp = np.array(time)
-                flag = True
-            else :
-                data = np.append(data, parsed)
-                # print(repTime)
-                timeStamp = np.append(timeStamp, time, axis=0)
+                if not flag :
+                    data = np.array(parsed)
+                    # timeStamp = np.array(time)
+                    timeStamp = np.array(time)
+                    flag = True
+                else :
+                    data = np.append(data, parsed)
+                    # print(repTime)
+                    timeStamp = np.append(timeStamp, time, axis=0)
+    except IOError as error :
+        print("Error occurred when processing phone : {0}".format(error))
+    except :
+        print("Unexpected error occurred : " + sys.exc_info()[0])
 
-        if not os.path.exists("../" + name):
-            os.mkdir("../" + name)
-        if not os.path.exists("../" + name + "/" + type):
-            os.mkdir("../" + name + "/" + type)
-        if not flag :
-            flag = True
-            timeStamp = np.array([])
-            data = np.array([])
-        if flag:
-            sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat",
-                        {"timeStamp_" + type: timeStamp, type: data})
+    if not os.path.exists("../" + name):
+        os.mkdir("../" + name)
+    if not os.path.exists("../" + name + "/" + type):
+        os.mkdir("../" + name + "/" + type)
+    if not flag :
+        flag = True
+        timeStamp = np.array([])
+        data = np.array([])
+    if flag:
+        sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat",{"timeStamp_" + type: timeStamp, type: data})
 
-        saveHashTable(table, "PhoneNumber")
+    saveHashTable(table, "PhoneNumber")
 
 # phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
 #

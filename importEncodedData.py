@@ -3,6 +3,7 @@ import numpy as np
 import numpy.matlib as npmlib
 import scipy.io as sio
 import os.path
+import sys
 
 directoryPath = "D:/SmartCampusData"
 
@@ -19,62 +20,69 @@ def extractAndSave(name, type, date, variable = False, size = 0) :
     saveTomat(type, date, timeStamp, data, name)
 
 def extract(path, name, type, date, variable = False, size = 0) :
-    data = [];
-    with open(path+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
-        index = 0
+    data = []
+    timeStamp = []
+    try :
+        with open(path+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
+            index = 0
 
-        buffer = []
-        flag = False
+            buffer = []
+            flag = False
 
-        while True :
-            line = f.readline().rstrip('\n')
-            if not line : break
+            while True :
+                line = f.readline().rstrip('\n')
+                if not line : break
 
-            dataF = line.split(",")
-            # print(dataF)
+                dataF = line.split(",")
+                # print(dataF)
 
-            if variable :
-                chunkSize = dataF[3]
-            else :
-                chunkSize = size
-
-            if len(dataF) != chunkSize :
-                if type != "Wifi" :
-                    continue
-            #
-            # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
-            # if
-            time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
-            try :
-                if type == "Wifi" :
-                    decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
+                if variable :
+                    chunkSize = dataF[3]
                 else :
-                    decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
-            except UnicodeDecodeError :
-                print("unicodeError occurred")
-                continue
+                    chunkSize = size
 
-            # print(time)
-            # print(decodeData)
+                if len(dataF) != chunkSize :
+                    if type != "Wifi" :
+                        continue
+                #
+                # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
+                # if
+                time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
+                try :
+                    if type == "Wifi" :
+                        decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[3:] if len(dataChunk)%4 == 0]
+                    else :
+                        decodeData =  [base64.b64decode(dataChunk).decode('UTF-8') for dataChunk in dataF[4:] if len(dataChunk)%4 == 0]
+                except UnicodeDecodeError :
+                    print("unicodeError occurred")
+                    continue
 
-            # if len(decodeData) < 3 :
-            #     print(decodeData)
+                # print(time)
+                # print(decodeData)
 
-            if not flag :
-                data = np.array(decodeData)
-                # timeStamp = np.array(time)
-                timeStamp = npmlib.repmat(time,len(decodeData),1)
-                flag = True
-            else :
-                data = np.append(data,decodeData,axis=0)
-                repTime = npmlib.repmat(time,len(decodeData),1)
-                # print(repTime)
-                timeStamp = np.append(timeStamp, repTime, axis=0)
+                # if len(decodeData) < 3 :
+                #     print(decodeData)
 
-        # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
-    if len(data) == 0 :
-        return "null", data
-    else : return timeStamp, data
+                if not flag :
+                    data = np.array(decodeData)
+                    # timeStamp = np.array(time)
+                    timeStamp = npmlib.repmat(time,len(decodeData),1)
+                    flag = True
+                else :
+                    data = np.append(data,decodeData,axis=0)
+                    repTime = npmlib.repmat(time,len(decodeData),1)
+                    # print(repTime)
+                    timeStamp = np.append(timeStamp, repTime, axis=0)
+
+            # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
+    except IOError as error:
+        print("Error occurred when processing iED : {0}".format(error))
+    except :
+        print("Unexpected error occurred : " + sys.exc_info()[0])
+    return  timeStamp, data
+    # if len(data) == 0 :
+    #     return "null", data
+    # else : return timeStamp, data
 
 # date = "2016_09_19"
 # #
