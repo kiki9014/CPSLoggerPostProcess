@@ -101,13 +101,11 @@ def extractAndSave(path, name, type, date) :
 
                 if not flag:
                     data = np.array([parsed])
-                    # timeStamp = np.array(time)
                     timeStamp = npmlib.repmat(time, len(parsed), 1)
                     flag = True
                 else:
                     data = np.append(data, [parsed])
                     repTime = npmlib.repmat(time, len(parsed), 1)
-                    # print(repTime)
                     timeStamp = np.append(timeStamp, repTime, axis=0)
     except IOError as error :
         print("Error occurred when processing App History : {0}".format(error))
@@ -125,34 +123,3 @@ def extractAndSave(path, name, type, date) :
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type : timeStamp, type: data})
 
     saveHashTable(table, "AppTable")
-    # print(table)
-
-# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-# #
-# phoneList = ["P1", "P2", "P3", "P4"]
-# # type = "App"
-# #
-# count = initCount(phoneList)
-# tableTemp = loadHashTable("AppTable")
-# print(tableTemp)
-#
-# for name in phoneList :
-#     # name = "Iron2"
-#
-#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-#
-#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-#     for f in fileList :
-#         dateFile = f[-14:-4]
-#         # print(dateFile[5:7])
-#         if int(dateFile[5:7]) < 5 :
-#             continue
-#         print(dateFile)
-#         extractAndSave(directoryPath, name, type, dateFile)
-
-# # print(table)
-# appCategory.saveTable()
-# saveCount(phoneList)
-
-# extractAndSave("GalaxyS6", type, "2016_09_22")

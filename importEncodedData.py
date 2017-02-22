@@ -13,7 +13,6 @@ def saveTomat(type,date,timeStamp, data, name) :
     if not os.path.exists("../" + name + "/" + type) :
         os.mkdir("../" + name + "/" + type)
     sio.savemat("../" + name +  "/" +  type + "/" + type + "_" + date + ".mat", {"timeStamp_" + type  : timeStamp, type : data})
-    # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
 
 def extractAndSave(name, type, date, variable = False, size = 0) :
     timeStamp, data = extract(name, type, date, variable, size)
@@ -24,9 +23,6 @@ def extract(path, name, type, date, variable = False, size = 0) :
     timeStamp = []
     try :
         with open(path+"/" + name + "/CPSLogger/" + type + "/CPSLogger_" + type + "_" + date + ".txt", 'r') as f :
-            index = 0
-
-            buffer = []
             flag = False
 
             while True :
@@ -34,7 +30,6 @@ def extract(path, name, type, date, variable = False, size = 0) :
                 if not line : break
 
                 dataF = line.split(",")
-                # print(dataF)
 
                 if variable :
                     chunkSize = dataF[3]
@@ -44,9 +39,6 @@ def extract(path, name, type, date, variable = False, size = 0) :
                 if len(dataF) != chunkSize :
                     if type != "Wifi" :
                         continue
-                #
-                # [True for dataChunk in dataF if len(dataChunk)%4 == 0]
-                # if
                 time = [[float(timeChunk) for timeChunk in dataF[0:3]]]
                 try :
                     if type == "Wifi" :
@@ -57,42 +49,17 @@ def extract(path, name, type, date, variable = False, size = 0) :
                     print("unicodeError occurred")
                     continue
 
-                # print(time)
-                # print(decodeData)
-
-                # if len(decodeData) < 3 :
-                #     print(decodeData)
-
                 if not flag :
                     data = np.array(decodeData)
-                    # timeStamp = np.array(time)
                     timeStamp = npmlib.repmat(time,len(decodeData),1)
                     flag = True
                 else :
                     data = np.append(data,decodeData,axis=0)
                     repTime = npmlib.repmat(time,len(decodeData),1)
-                    # print(repTime)
                     timeStamp = np.append(timeStamp, repTime, axis=0)
 
-            # sio.savemat(type + "Data_" + date + ".mat", {"timeStamp_" + type + "_" + date : timeStamp, type + "_" + date : data})
     except IOError as error:
         print("Error occurred when processing iED : {0}".format(error))
     except :
         print("Unexpected error occurred : " + sys.exc_info()[0])
     return  timeStamp, data
-    # if len(data) == 0 :
-    #     return "null", data
-    # else : return timeStamp, data
-
-# date = "2016_09_19"
-# #
-#
-# name = "Iron2"
-
-# extractAndSave("Hist",date,False,5)
-# extractAndSave(name, "Clip",date,False,5)
-# ts, data = extract(name, "Clip", date, False, 5)
-# print("data is " + data)
-# extractAndSave("Book",date,False,5)
-# extractAndSave("Key",date,False,5)
-# extractAndSave("Wifi",date,True)

@@ -79,9 +79,3 @@ def extractAndSave (path, type, name, date) :
             data[dataType] = np.array([])
         if flags[idxData]:
             sio.savemat("../" + name + "/" + type + "/" + dataType + "_" + date + ".mat", {dataType: data[dataType]})
-
-# name = "Iron2"
-#
-# date = "2016_11_01"
-#
-# extractAndSave(directoryPath,"Power", name, date)

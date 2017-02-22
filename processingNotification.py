@@ -4,27 +4,25 @@ import scipy.io as sio
 import os.path
 import sys
 
-directoryPath = "D:/SmartCampusData"
-
+# Classify notifications
 messengerList = ['com.kakao.talk','jp.naver.line.android','com.Slack','com.facebook.orca']
-status = {'p' : 0, 'r' : 1}
+status = {'p' : 0, 'r' : 1}     # 'p' : posted, 'r' : read
 
-notiType = ['Messenger', 'Notification', 'SMS']
+notiType = ['Messenger', 'Notification', 'SMS'] # 'Messenger' : SNS, 'Notification' : neither SNS or SMS
 
+# Initialize count of sender
 cntSender = {}
-
 cntSender["Messenger"] = {}
 cntSender["SMS"] = {}
 
-# data structure
-# time, type(0-SNS, 1-Noti, 2-Message), sender(-1 if type is noti), content, post/remove(0/1)
-
+# Count function
 def countSender (name, type, sender) :
     if sender in cntSender[type][name] :
         cntSender[type][name][sender] += 1
     else :
         cntSender[type][name][sender] = 1
 
+# For convenience (not used)
 class UnexpectedError (Exception) :
     def __init__(self,value) :
         self.value = value
@@ -32,25 +30,25 @@ class UnexpectedError (Exception) :
     def __str__(self):
         return repr(self.value)
 
+# If array has null and encoded string both, decode separately
 def decodeWnull(text) :
     if text == "null" : return "null"
     else :
-        # print(text)
         try :
             return base64.b64decode(text).decode("UTF-8")
         except (UnicodeDecodeError) :
             raise UnexpectedError("decode Failed")
 
+# Parsing function
 def parsingContent(contentStr, time) :
     timeData = [float(timeChunk) for timeChunk in time]
     parsed = timeData
-    # print(contentStr)
     if len(contentStr) == 1 : return "null"
-    elif len(contentStr) == 3 : #SMS, MMS
+    elif len(contentStr) == 3 : # SMS, MMS
         if (contentStr[0] != "SMS") & (contentStr[0] != "MMS") : return "error"
         sender = base64.b64decode(contentStr[1]).decode("UTF-8")
         contentLength = base64.b64decode(contentStr[2]).decode("UTF-8")
-        if not contentLength.isnumeric() : contentLength = len(contentLength)
+        if not contentLength.isnumeric() : contentLength = len(contentLength) # In old version, contentLength is content instead of length
         parsed.append(2) # 2 means SMS and MMS
         parsed.append(int(sender))
         parsed.append(int(contentLength))
@@ -86,15 +84,13 @@ def extractAndSave(path, date, name) :
         with open(path+"/"+name+"/CPSLogger/" + type + "/" + "CPSLogger_" + type + "_" + date + ".txt",'r') as f :
 
             while True :
-                line = f.readline()
+                line = f.readline().rstrip('\n') # If error occurred, erase ".rstrip('\n')"
 
                 if not line : break
 
                 dataF = line.split(",")
 
                 parsed = parsingContent(dataF[3:],dataF[:3])
-
-                # print(parsed)
 
                 if parsed == "null" : continue
                 if parsed == "error" : break
@@ -118,7 +114,7 @@ def extractAndSave(path, date, name) :
         data = np.array([])
     if not os.path.exists("../" + name):
         os.mkdir("../" + name)
-    if not os.path.exists("../" + name + "/" + type):
+    if not os.path.exists("../" + name + "/" + type) :
         os.mkdir("../" + name + "/" + type)
     if flag :
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type: data})
@@ -132,64 +128,10 @@ def saveCount(nameList) :
         os.mkdir("../common")
     MessengerList = {}
     SMSList = {}
-    #
+
     for name in nameList :
         MessengerList[name + "_MessengerList"] = list(cntSender["Messenger"][name].items())
         SMSList[name+ "_SMSList"] = list(cntSender["SMS"][name].items())
 
-    sio.savemat("../common/SNS.mat", MessengerList)#{ "GalaxyS7" : MessengerList["GalaxyS7"], "":""})
+    sio.savemat("../common/SNS.mat", MessengerList)
     sio.savemat("../common/SMS.mat", SMSList)
-
-# date = "2016_05_18"
-# name = ["Iron2", "GalaxyS4", "GalaxyS7", "Vu2"]
-# name = "Iron2"
-
-# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-#
-#
-# for name in phoneList :
-#     initCount(name)
-#
-#     path = directoryPath + "/" + name + "/CPSLogger/Notification"
-#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-#     for f in fileList :
-#         dateFile = f[-14:-4]
-#         # print(dateFile[5:7])
-#         if int(dateFile[5:7]) < 5 :
-#             continue
-#         print(dateFile)
-#         extractAndSave(directoryPath, dateFile, name)
-# saveCount(phoneList)
-#
-#
-# # print(cntSender["Messenger"])
-# #
-# if not os.path.exists("../common") :
-#     os.mkdir("../common")
-# MessengerList = {}
-# SMSList = {}
-# #
-# for name in phoneList :
-#     MessengerList[name + "_MessengerList"] = list(cntSender["Messenger"][name].items())
-#     SMSList[name+ "_SMSList"] = list(cntSender["SMS"][name].items())
-#
-# sio.savemat("../common/SNS.mat", MessengerList)#{ "GalaxyS7" : MessengerList["GalaxyS7"], "":""})
-# sio.savemat("../common/SMS.mat", SMSList)
-
-# extractAndSave("2016_05_18", name)
-# extractAndSave("2016_05_19", name)
-# extractAndSave("2016_05_20", name)
-# extractAndSave("2016_05_23", name)
-# extractAndSave("2016_05_24", name)
-# extractAndSave("2016_05_25", name)
-# extractAndSave("2016_05_26", name)
-# extractAndSave("2016_05_27", name)
-# extractAndSave("2016_05_31", name)
-# extractAndSave("2016_06_01", name)
-# extractAndSave("2016_06_02", name)
-# extractAndSave("2016_06_03", name)
-# extractAndSave("2016_06_04", name)
-# extractAndSave("2016_06_06", name)
-# extractAndSave("2016_06_07", name)
-# extractAndSave("2016_06_08", name)
