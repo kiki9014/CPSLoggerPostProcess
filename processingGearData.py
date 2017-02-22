@@ -5,6 +5,9 @@ import sys
 
 directoryPath = "D:/Data"
 
+# Participant list
+deviceIDList = ["P1", "P2", "P3", "P4", "P5"]
+
 # As flag in gear data is started from 1, "None" is added
 dataTypes = ["None", "gearAcc", "gearGyro", "gearMag", "gearUV", "gearLight", "gearPress", "gearHR", "gearBattery", "gearMemory"]
 lenData = [0, 8, 8, 8, 6, 6, 6, 6, 6, 6]    # AGM data are three dimension vector
@@ -106,7 +109,6 @@ def transGearToMat(path, name, date) :
         os.mkdir("../" + name + "/" + date)
     sio.savemat("../" + name + "/" + date + "/" + "gearSensing_" + date + ".mat", data)
 
-deviceIDList = ["P1", "P2", "P3", "P4", "P5"]
 for deviceID in deviceIDList :
     path = directoryPath + "/" + deviceID + "/Gear"
     print(deviceID)
