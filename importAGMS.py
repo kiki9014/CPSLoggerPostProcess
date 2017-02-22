@@ -8,11 +8,10 @@ def dataArrange(line) :
     try :
         dataF = [float(datum) for datum in data]
     except ValueError :
-        # print("Wrong input : %s" , data)
         dataF = []
     return dataF
 
-## TODO : Implement This for simple code
+## Implement This for simple code => Try it if you have interest in simple code
 #
 # def line_gen(f):
 #     while True:
@@ -79,56 +78,3 @@ def extractAndSave(path, type, name, date, size) :
     sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat", {type : data})
 
 directoryPath = "D:/SmartCampusData/"
-#
-# date = "2016_05_18"
-# name = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-#
-# for phone in name :
-#     path = directoryPath + phone + "/CPSLogger/Acc"
-#
-#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-#     for f in fileList :
-#         dateFile = f[-14:-4]
-#         extractAndSave("Acc",phone,dateFile,7)
-#         extractAndSave("Gyro",phone,dateFile,7)
-#         extractAndSave("Mag",phone,dateFile,7)
-    # extractAndSave("Step",name,dateFile,5)
-
-#
-# with open(directoryPath+"/Acc/CPSLogger_Acc_2016_04_06.txt",'r') as f :
-#     index = 0
-#
-#     buffer = []
-#     flag = False
-#     while True :
-#         line = f.readline()
-#         if not line : break
-#
-#         parsed = dataArrange(line)
-#         if len(parsed) != 7:
-#             continue
-#
-#         buffer.append(parsed)
-#
-#         if len(buffer) == 100000:
-#             if not flag:
-#                 data = np.array(buffer)
-#                 flag = True
-#             else :
-#                 data = np.append(data, buffer, axis=0)
-#             buffer = []
-#         index += 1
-#         if index%10000 == 0 :
-#             print(index)
-#
-#     if not flag:
-#         data = np.array(buffer)
-#         flag = True
-#     else:
-#         data = np.append(data, buffer, axis=0)
-#     buffer = []
-#     print("Complete")
-#     print(data[1][1])
-#     sio.savemat("AccData.mat", {"Acc" : data})
-# # print(data)

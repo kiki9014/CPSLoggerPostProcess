@@ -1,6 +1,5 @@
 import numpy as np
 import scipy.io as sio
-import os.path
 import operator
 from sklearn import svm
 from sklearn.cross_validation import StratifiedShuffleSplit
@@ -11,6 +10,8 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
+
+## Python machine learning test file
 
 directoryPath = "C:/Users/Hyunjun/Documents/MATLAB/Gear"
 

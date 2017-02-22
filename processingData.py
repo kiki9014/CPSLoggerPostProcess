@@ -24,7 +24,6 @@ def extractAndSave (path, name, type, date):
                 dataUid = line.split(",")
 
                 if len(dataUid) < 5 : break
-                # print(dataUid)
 
                 time = [float(timeChunk) for timeChunk in dataUid[0:3]]
 
@@ -83,23 +82,3 @@ def extractAndSave (path, name, type, date):
     if flag:
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat",
                     {type: data})
-
-# name = "Iron2"
-
-# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-#
-# type = "Data"
-#
-# for name in phoneList :
-#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-#     print(name)
-#
-#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-#     for f in fileList :
-#         dateFile = f[-14:-4]
-#         # print(dateFile[5:7])
-#         if int(dateFile[5:7]) < 5 :
-#             continue
-#         print(dateFile)
-#         extractAndSave(name, type, dateFile)

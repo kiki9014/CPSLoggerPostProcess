@@ -1,12 +1,7 @@
 from lxml import html
 import requests
-import numpy as np
-import scipy.io as sio
 import pickle
 import os.path
-
-# appTable = {}
-# categoryList = []
 
 def loadHashTable(tableName) :
     if not os.path.isfile(tableName + ".pkl") :
@@ -45,7 +40,6 @@ def requestCategory(appName) :
     else :
         category = "etc"
 
-    # print(category)
     return category
 
 def getCategory(appName) :
@@ -68,17 +62,3 @@ def saveTable () :
     totalTable["categoryList"] = categoryList
 
     saveHashTable(totalTable, "AppCategory")
-
-# cat1 = requestCategory("jp.grenge.pocolondungeons,com")
-# # cat2 = getCategory("jp.naver.line.android")
-# #
-# # cat3 = getCategory("com.chineseskill")
-# #
-# print(cat1)
-# # print(cat2)
-# # print(cat3)
-# #
-# print(categoryList)
-# print(appTable)
-#
-# saveTable()

@@ -24,9 +24,7 @@ def hashing(data, table) :
         return table[data]
 
 def processingPhoneNumber(string, table) :
-    # filtered = filter(str.isdigit, string)
     number = ''.join(x for x in string if x.isdigit())
-    # print(number)
 
     if number == '' :
         return "null"
@@ -62,12 +60,10 @@ def extractAndSave(path, name, type, date) :
 
                 if not flag :
                     data = np.array(parsed)
-                    # timeStamp = np.array(time)
                     timeStamp = np.array(time)
                     flag = True
                 else :
                     data = np.append(data, parsed)
-                    # print(repTime)
                     timeStamp = np.append(timeStamp, time, axis=0)
     except IOError as error :
         print("Error occurred when processing phone : {0}".format(error))
@@ -86,21 +82,3 @@ def extractAndSave(path, name, type, date) :
         sio.savemat("../" + name + "/" + type + "/" + type + "_" + date + ".mat",{"timeStamp_" + type: timeStamp, type: data})
 
     saveHashTable(table, "PhoneNumber")
-
-# phoneList = ["Iron2", "GalaxyS6", "GalaxyS7", "Vu2", "G5", "Nexus5X"]
-#
-# type = "Phone"
-# for name in phoneList :
-#     # name = "Iron2"
-#
-#     path = "D:/SmartCampusData" + "/" + name + "/CPSLogger/" + type
-#
-#     fileList = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-#
-#     for f in fileList :
-#         dateFile = f[-14:-4]
-#         # print(dateFile[5:7])
-#         if int(dateFile[5:7]) < 5 :
-#             continue
-#         print(dateFile)
-#         extractAndSave(name, type, dateFile)

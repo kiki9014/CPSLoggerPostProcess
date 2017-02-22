@@ -52,7 +52,6 @@ def extractAndSave (path, type, name, date) :
 
                 parsed = processingPower(powerTypes[dataType],dataF[4:])
                 if len(parsed) != length[dataType] : continue
-                # print(parsed)
 
                 time.extend(parsed)
 

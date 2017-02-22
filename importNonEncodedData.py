@@ -7,9 +7,6 @@ directoryPath = "D:/CPSLogger"
 def extractAndSave(type, name, variable = False, size = 0) :
     try :
         with open(directoryPath+"/" + type + "/" + "CPSLogger_" + type + "_" + name + ".txt",'r') as f :
-            index = 0
-
-            buffer = []
             flag = False
 
             while True :
@@ -43,8 +40,3 @@ def extractAndSave(type, name, variable = False, size = 0) :
     except IOError as error :
         print("Error occurred when processing iNED : {0}".format(error))
     sio.savemat(type + "Data_" + name + ".mat", {"timeStamp_" + type + "_" + name : timeStamp, type + "_" + name : data})
-
-# date = "2016_04_14"
-#
-# extractAndSave("App",date,False,5)
-# extractAndSave("Mem",date,False,5)
