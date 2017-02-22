@@ -221,3 +221,6 @@ for deviceID in deviceIDList :
         extractAndSave(deviceID, date)
 
 saveLabelList(labelList, "surveyLabelList")
+
+print(labelList["location"])
+print(labelList["activity"])
