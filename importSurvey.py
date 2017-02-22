@@ -6,6 +6,14 @@ import sys
 
 directoryPath = "D:/Data/" # Directory path to import raw survey data
 
+# List of participant
+deviceIDList = ["P1","P2","P3","P4","P5"]
+
+# Date that data collection is started
+season4Date = "1_01"
+
+
+
 radioValueDefault = {"down_1" : -1, "mod" : 0, "up_1" : 1, "undefined" : -99} # Used to label health and change of mood status
 
 radioValueHealth = {"abs_un_healthy" : -1, "abs_mod_healthy" : 0, "abs_healthy" : 1, "undefined" : -99} # Used to label current health status, not change
@@ -24,9 +32,6 @@ locationList = {"식당" : 0, "카페" : 1, "도서관"  : 2, "강의실" : 3, "
 defaultLabelList = {"location" : locationList, "activity" : activityList}
 
 labelList = {}
-
-# Date that data collection is started
-season4Date = "1_01"
 
 itemLength = [7, 7, 8, 11] # Length of item that participant replied season 1~3 in done with lab people, 4 is done with other people
 
@@ -191,8 +196,6 @@ if loadedTable == "null" :
 else :
     labelList = loadedTable
 
-# List of participant
-deviceIDList = ["P1","P2","P3","P4","P5"]
 
 # Main part
 for deviceID in deviceIDList :
